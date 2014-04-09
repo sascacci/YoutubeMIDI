@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<head>
+<title> Web MIDI Youtube Player </title>
+</head>
+
+<html>
+<body>
+<div id="player"></div>
+
+<script>
+
+var player;
+var inputs=null;
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+function onYouTubeIframeAPIReady() {
+	player = new YT.Player('player', {
+		height: '390',
+		width: '640',
+		videoId: '0-HeXtphdjE',
+		events: {
+			'onReady': onPlayerReady
+		}
+	});
+}
+
+function onPlayerReady(event) {
+	player.playVideo();
+	player.pauseVideo();
+}
+
+window.addEventListener('load', function(e) {
+	navigator.requestMIDIAccess({sysex:false}).then( success, failure );
+}, false);
+
+function success( m ) {
+	inputs = m.inputs();
+
+	for (var i = 0; i < inputs.length; i++) {
+		inputs[i].onmidimessage = handleMIDIMessage;
+	}
+}
+
+function failure( error ) { }
+
+function handleMIDIMessage( ev ) {
+	switch(ev.data[0]) {
+	case 0xFA:
+	case 0xFB:
+		player.playVideo();
+		break;
+	case 0xFC:
+		player.pauseVideo();
+		break;
+	default:
+		break;
+	}
+}
+
+</script>
+</body>
+</html>
