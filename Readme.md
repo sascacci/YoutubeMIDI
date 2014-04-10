@@ -6,6 +6,6 @@
 
   Google Chrome Mac/Win ver.34
 
-## Authors
+## Author
 
   - Masakazu Watanabe (sascacci)
